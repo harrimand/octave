@@ -1,0 +1,56 @@
+function [f power] = fftPlot(noiseLevel)
+%UNTITLED2 Summary of this function goes here
+%   Detailed explanation goes here
+fs = 5000;
+dt = 1/fs;
+t = 0:1/fs:3-1/fs;
+f300 = 100 * sin(2 * pi * 300 * t);
+f100 = 50 * sin(2 * pi * 100 * t);
+f50 = 30 * sin(2 * pi * 50 * t);
+sinSum = f300 + f100 + f50;
+resultSum = sinSum + noiseLevel * rand(size(t));
+
+fftResult = fft(resultSum);
+n = length(fftResult);
+f = (0:n-1)*(fs/n);
+g = f(:,1:1500);
+
+power = abs(fftResult).^2/n;
+power2 = power(:,1:1500);
+plot(g, power2);
+end
+
+%---------------------------------------------------
+
+
+function [t, resultSum] = sinSum(noiseLevel)
+%Sum 100 * sin(2*pi*300*t) + 50 * sin(2*pi*100*t) + 30 * sin(2*pi*50*t)
+%random noise multiplied by noiselevel will be added to the sum
+fs = 5000;
+dt = 1/fs;
+t = [0:dt:300*dt];
+
+f300 = 100 * sin(2 * pi * 300 * t);
+f100 = 50 * sin(2 * pi * 100 * t);
+f50 = 30 * sin(2 * pi * 50 * t);
+
+sinSum = f300 + f100 + f50;
+resultSum = sinSum + noiseLevel * rand(size(t));
+
+figure(1);
+plot(t, f50);
+title('50 Hz A=30');
+grid on;
+figure(2);
+plot(t, f300);
+title('300 Hz A=100');
+grid on;
+figure(3);
+plot(t, f100);
+title('100 Hz A=50');
+grid on;
+figure(4);
+plot(t, resultSum);
+title('Sum with Noise');
+grid on;
+end
