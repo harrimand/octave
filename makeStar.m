@@ -1,5 +1,4 @@
 
-
 function [star] = makeStar()
 
   VertPos = 2;
