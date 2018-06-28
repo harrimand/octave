@@ -1,5 +1,5 @@
 
-function  [RsMin RsMax] = zener(Vs, Vz, IL, PzMax)
+function  [RsMin, RsMax] = zener(Vs, Vz, IL, PzMax)
   % zener(Vs, Vz, IL, PzMax) returns Min and Max series resistor value.
   % Usage Example: 
   %      [RsMin RsMax] = zener(12.5, 5.1, .015, .20)
@@ -10,6 +10,8 @@ function  [RsMin RsMax] = zener(Vs, Vz, IL, PzMax)
   %
   % Subtract and Add source voltage (noise/deviations) and run for each.
   % Derate PzMax to protect zener from over current.
+  % Run function with Load Current = 0 to find minimum series resistance 
+  %     to protect the zener diode when the output is switched off.
   %   We have zener diodes rated for 250 mW
   %
   
@@ -18,17 +20,21 @@ function  [RsMin RsMax] = zener(Vs, Vz, IL, PzMax)
   I_tMax = IL + IzMax;   % Maximum Total Current
   RsMin = V_Rs / I_tMax; % Minimum Series Resistor Value
   RsMax = V_Rs / IL;     % Maximum Series Resistor Value
-  Pmax = Vs*(Vs-Vz)/RsMin;
-  Pmin = Vs*(Vs-Vz)/RsMax;  
+  Pmax = Vs*(Vs-Vz)/RsMin; % Max Input Power with minimum series resistance
+  Pmin = Vs*(Vs-Vz)/RsMax; % Min Input Power with maximum series resistance
+  Pout = Vz * IL;
+  PeffMin = 100 * Pout / Pmax;
+  PeffMax = 100 * Pout / Pmin;
   
-  display('');
-  display(['Maximum Series Resistor: ' num2str(RsMax)]);
-  display(['Input Power for ' num2str(RsMax) ' Ohms: ' num2str(Pmin) ' Watts']);
+  disp('...');
+  disp(['Maximum Series Resistor: ' num2str(RsMax)]);
+  disp(['Input Power for ' num2str(RsMax) ' Ohms: ' num2str(Pmin) ' Watts']);
+  disp([' Maximum Efficiency: ' num2str(PeffMax) '%']);
+  disp(' ');  
+  disp(['Minimum Series Resistor: ' num2str(RsMin)]);
+  disp(['Input Power for ' num2str(RsMin) ' Ohms: ' num2str(Pmax) ' Watts']);
+  disp([' Minimum Efficiency: ' num2str(PeffMin) '%']);
+  disp(' ');
+  disp(['Output Power: ' num2str(Vz * IL) ' Watts']);
   
-  display(['Minimum Series Resistor: ' num2str(RsMin)]);
-  display(['Input Power for ' num2str(RsMin) ' Ohms: ' num2str(Pmax) ' Watts']);
-  
-  display(['Output Power: ' num2str(Vz * IL) ' Watts']);
- 
-  
-end
+  end
