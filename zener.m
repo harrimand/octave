@@ -1,4 +1,5 @@
 
+
 function  [RsMin, RsMax] = zener(Vs, Vz, IL, PzMax)
   % zener(Vs, Vz, IL, PzMax) returns Min and Max series resistor value.
   % Usage Example: 
@@ -37,4 +38,8 @@ function  [RsMin, RsMax] = zener(Vs, Vz, IL, PzMax)
   disp(' ');
   disp(['Output Power: ' num2str(Vz * IL) ' Watts']);
   
+  imshow('zener.png');
+  text(150, 50, [num2str(RsMin) ' < Rs < ' num2str(RsMax) ' Ohm'], 'FontSize', 14);
+  text(500, 50, [num2str(IL) ' Amps' ], 'FontSize', 14);
+  set(gcf, 'position', [100, 500, 800, 600]);
   end

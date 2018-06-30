@@ -1,0 +1,137 @@
+>> % Author:  Darrell Harriman  harrimand@gmail.com
+>> %    Applications MatLab and Octave
+>> % This document demonstrates use of the zenerMat.m function
+>> % Optional plot settings are done using functions Dxtick() and Dytick()
+>> % Analyzing a zener diode voltage regulation circuit over a range of input voltages
+>> % Voltage inputs range from 7 to 13 volts in steps of .5 volts
+>> % Fixed rated zener is 5.1 volts
+>> % Circuit designed max zener power dissipation = .20 Watts
+>> % Designed Output current = .014 amps to energize an LED
+>> % Calculating Min and Max series resistor values, Circuit Currents, Input and Output power and efficiency
+>> % Input to zenerMat() function is a 2D list of input parameters with Source Voltage, Zener Voltage, Load 
+>> %         current and Maximum Rated Zener Power dissipation 
+>> %
+>> % Creating 2D List of imput parameters with one set of inputs in each row
+>> zIn(:,1) = linspace(7, 13, 13)'; % Voltage Range from 7 to 13 inclusive in .5 volt increments.
+>> zIn(:,2) = 5.1;                  % Rated Zener Voltage (All Rows, Column 2)
+>> zIn(:,3) = .014;                 % Designed Load Current (All Rows, Column 3)
+>> zIn(:,4) = .020; % Designed Maximum Zener Power Dissipation.  Rated zener power = .25 W
+>> zIn
+zIn =
+    7.000000    5.100000    0.014000    0.020000
+    7.500000    5.100000    0.014000    0.020000
+    8.000000    5.100000    0.014000    0.020000
+    8.500000    5.100000    0.014000    0.020000
+    9.000000    5.100000    0.014000    0.020000
+    9.500000    5.100000    0.014000    0.020000
+   10.000000    5.100000    0.014000    0.020000
+   10.500000    5.100000    0.014000    0.020000
+   11.000000    5.100000    0.014000    0.020000
+   11.500000    5.100000    0.014000    0.020000
+   12.000000    5.100000    0.014000    0.020000
+   12.500000    5.100000    0.014000    0.020000
+   13.000000    5.100000    0.014000    0.020000
+>>
+>> format compact % Supresses unnecessary blank output lines.
+>> % Now we pass the zIn matrix to the zenerMat() function and accept the returned matrix into zOut
+>> zOut = zenerMat(zIn);
+   IzMax         V_Rs        I_Max        RsMin        RsMax         Pmax         PMin         Pout         PeffMin      PeffMax
+>> zOut
+zOut =
+   3.9216e-03   1.9000e+00   1.7922e-02   1.0602e+02   1.3571e+02   1.2545e-01   9.8000e-02   7.1400e-02   5.6915e+01   7.2857e+01
+   3.9216e-03   2.4000e+00   1.7922e-02   1.3392e+02   1.7143e+02   1.3441e-01   1.0500e-01   7.1400e-02   5.3120e+01   6.8000e+01
+   3.9216e-03   2.9000e+00   1.7922e-02   1.6182e+02   2.0714e+02   1.4337e-01   1.1200e-01   7.1400e-02   4.9800e+01   6.3750e+01
+   3.9216e-03   3.4000e+00   1.7922e-02   1.8972e+02   2.4286e+02   1.5233e-01   1.1900e-01   7.1400e-02   4.6871e+01   6.0000e+01
+   3.9216e-03   3.9000e+00   1.7922e-02   2.1761e+02   2.7857e+02   1.6129e-01   1.2600e-01   7.1400e-02   4.4267e+01   5.6667e+01
+   3.9216e-03   4.4000e+00   1.7922e-02   2.4551e+02   3.1429e+02   1.7025e-01   1.3300e-01   7.1400e-02   4.1937e+01   5.3684e+01
+   3.9216e-03   4.9000e+00   1.7922e-02   2.7341e+02   3.5000e+02   1.7922e-01   1.4000e-01   7.1400e-02   3.9840e+01   5.1000e+01
+   3.9216e-03   5.4000e+00   1.7922e-02   3.0131e+02   3.8571e+02   1.8818e-01   1.4700e-01   7.1400e-02   3.7943e+01   4.8571e+01
+   3.9216e-03   5.9000e+00   1.7922e-02   3.2921e+02   4.2143e+02   1.9714e-01   1.5400e-01   7.1400e-02   3.6218e+01   4.6364e+01
+   3.9216e-03   6.4000e+00   1.7922e-02   3.5711e+02   4.5714e+02   2.0610e-01   1.6100e-01   7.1400e-02   3.4644e+01   4.4348e+01
+   3.9216e-03   6.9000e+00   1.7922e-02   3.8501e+02   4.9286e+02   2.1506e-01   1.6800e-01   7.1400e-02   3.3200e+01   4.2500e+01
+   3.9216e-03   7.4000e+00   1.7922e-02   4.1291e+02   5.2857e+02   2.2402e-01   1.7500e-01   7.1400e-02   3.1872e+01   4.0800e+01
+   3.9216e-03   7.9000e+00   1.7922e-02   4.4081e+02   5.6429e+02   2.3298e-01   1.8200e-01   7.1400e-02   3.0646e+01   3.9231e+01
+>> % Column labels are aligned and displayed by the zenerMat function.
+>>
+>> % Getting Help on the zenerMat() function
+>> help zenerMat
+'zenerMat' is a function from the file /home/darrell/Documents/Octave/zenerMat.m
+
+ zenerMat(iS) returns a 2D matrix with zener diode circuit analysis results
+
+ Usage Example: 
+      analysis = zenerMat(iS)
+      where iS is a 2D list of input parameters
+ iS(:,1) = all Rows, Column 1 = Supply Voltage
+ iS(:,2) = all Rows, Column 2 = Rated Zener Voltage
+ iS(:,3) = all Rows, Column 3 = Designed Load Current
+ is(:,4) = all Rows, Column 4 = Rated Max Zener Power
+
+ Output zS is a 2D list containing calculated analysis results.
+ zS contains one row for each row in iS
+ zS(:1) = all Rows, Column 1 = IzMax = Max Zener Current
+ zS(:2) = all Rows, Column 2 = V_Rs = Voltage on Series Resistor
+ zS(:3) = all Rows, Column 3 = I_Max = Max Total Current
+ zS(:4) = all Rows, Column 4 = RsMin = Minimum Series Resistor Value
+ zS(:5) = all Rows, Column 5 = RsMax = Maximum Series Resistor Value
+ zS(:6) = all Rows, Column 6 = PMax = Maximum Input Power
+ zS(:7) = all Rows, Column 7 = PMin = Minimum Input Power
+ zS(:8) = all Rows, Column 8 = Pout = Output Power to load
+ zS(:9) = all Rows, Column 9 = PeffMin = Minimum Power Efficiency
+ zS(:10) = all Rows, Column 10 = PeffMax = Maximum Power Efficiency
+
+ zS = [IzMax V_Rs I_Max RsMin RsMax Pmax PMin Pout PeffMin PeffMax]
+
+ See also: zener, zenerSweep
+
+
+Additional help for built-in functions and operators is
+available in the online version of the manual.  Use the command
+'doc <topic>' to search the manual index.
+
+Help and information about Octave is also available on the WWW
+at http://www.octave.org and via the help@octave.org
+mailing list.
+>> 
+>> % Plotting the series Minimum and Maximum resistor values over the range of input voltages. 
+>> plot(zIn(:,1)', zOut(:,4)', 'LineWidth', 2, zIn(:,1)', zOut(:,5)', 'LineWidth', 2);
+>> 
+>> % Plotting the calculated maximum and minimum Power Input over the range of input voltages.
+>> figure(2);
+>> plot(zIn(:,1)', zOut(:,6)', 'LineWidth', 2, zIn(:,1)', zOut(:,7)', 'LineWidth', 2);
+>> 
+>> % Plotting the calculated minimum and maximum Power Efficiency over the range of input voltages.
+>> figure(3);
+>> plot(zIn(:,1)', zOut(:,9)', 'LineWidth', 2, zIn(:,1)', zOut(:,10)', 'LineWidth', 2);
+>> 
+>> % Optional Plot axis settings, titles and labels
+>> % Using custom functions Dxtick() and Dytick()
+>> figure(1);
+>> Dxtick(3, .5);
+>> Dytick(3, 5);
+>> grid off
+>> grid on
+>> title('Min / Max Series Resistance');
+>> xlabel('V source');
+>> ylabel('Series Resistance Ohms');
+>>
+>> figure(2);
+>> Dxtick(3, .5);
+>> Dytick(1, .025);
+>> grid off
+>> grid on
+>> title('Min / Max Input Power');
+>> xlabel('V source');
+>> ylabel('Input Power Watts');
+>>
+>> figure(3);
+>> Dxtick(3, .5);
+>> Dytick(3, 5);
+>> grid off
+>> grid on
+>> title('Min / Max Power Efficiency');
+>> xlabel('V source');
+>> ylabel('Power Efficiency %');
+>> 
+>> diary off  % This document was recorded using the 'diary on' setting 
+>>  
