@@ -33,9 +33,9 @@ function  [zS] = zenerMat(iS)
   'Pout' 'PeffMin' 'PeffMax'};
   head = blanks(colStart);
   for c = 1:length(labels)
-    strLen = rindex([labels{c} '_'],'_'); 
-    if (colSpace - strLen > 1)
-      head = [head labels{c} blanks(colSpace - strLen + 1)];
+    strLen = rindex([labels{c} '_'],'_') - 1; 
+    if (colSpace - strLen > 2)
+      head = [head labels{c} blanks(colSpace - strLen)];
     else
       head = [head substr(labels{c}, 1, colSpace - 1) blanks(1)];
     end
