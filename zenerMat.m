@@ -27,10 +27,14 @@ function  [zS] = zenerMat(iS)
   %
   % See also: zener, zenerSweep
   
-  header = (['   ' 'IzMax         ' 'V_Rs        ' 'I_Max        '...
-  'RsMin        ' 'RsMax         ' 'Pmax         ' 'PMin         '...
-  'Pout         ' 'PeffMin      ' 'PeffMax']);
-  disp(header);
+  colStart = 5;   % Number of spaces before first column label
+  colSpace = 12;  % Column Spacing for column labels.
+  header = {'IzMax' 'V_Rs' 'I_Max' 'RsMin' 'RsMax' 'Pmax' 'PMin'...
+  'Pout' 'PeffMin' 'PeffMax'};
+  head = blanks(colStart);
+  for c = 1:length(header)
+    head = [head header{c} blanks(colSpace - rindex([header{c} '_'],'_') + 1)];
+  end
   
   zS(:,1) = iS(:,4) ./ iS(:,2);             % IzMax = PzMax / Vz
   zS(:,2) = iS(:,1) -  iS(:,2);             % V_Rs = Vs - Vz
@@ -42,5 +46,9 @@ function  [zS] = zenerMat(iS)
   zS(:,8) = iS(:,2) .* iS(:,3);             % Pout = Vz * IL
   zS(:,9) = zS(:,8) ./ zS(:,6) .* 100;      % PeffMin = Pout / Pmax * 100
   zS(:,10) = zS(:,8) ./ zS(:,7) .* 100;     % PeffMax = Pout / Pmin * 100
+
+  disp(' ');
+  disp(head);
+  disp(zS);
   
 end
