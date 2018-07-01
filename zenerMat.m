@@ -29,12 +29,18 @@ function  [zS] = zenerMat(iS)
   
   colStart = 5;   % Number of spaces before first column label
   colSpace = 12;  % Column Spacing for column labels.
-  header = {'IzMax' 'V_Rs' 'I_Max' 'RsMin' 'RsMax' 'Pmax' 'PMin'...
+  labels = {'IzMax' 'V_Rs' 'I_Max' 'RsMin' 'RsMax' 'Pmax' 'PMin'...
   'Pout' 'PeffMin' 'PeffMax'};
   head = blanks(colStart);
-  for c = 1:length(header)
-    head = [head header{c} blanks(colSpace - rindex([header{c} '_'],'_') + 1)];
+  for c = 1:length(labels)
+    strLen = rindex([labels{c} '_'],'_'); 
+    if (colSpace - strLen > 1)
+      head = [head labels{c} blanks(colSpace - strLen + 1)];
+    else
+      head = [head substr(labels{c}, 1, colSpace - 1) blanks(1)];
+    end
   end
+  head = deblank(head);  % Remove trailing spaces from string.
   
   zS(:,1) = iS(:,4) ./ iS(:,2);             % IzMax = PzMax / Vz
   zS(:,2) = iS(:,1) -  iS(:,2);             % V_Rs = Vs - Vz
