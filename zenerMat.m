@@ -12,16 +12,16 @@ function  [zS] = zenerMat(iS)
   %
   % Output zS is a 2D list containing calculated analysis results.
   % zS contains one row for each row in iS
-  % zS(:1) = all Rows, Column 1 = IzMax = Max Zener Current
-  % zS(:2) = all Rows, Column 2 = V_Rs = Voltage on Series Resistor
-  % zS(:3) = all Rows, Column 3 = I_Max = Max Total Current
-  % zS(:4) = all Rows, Column 4 = RsMin = Minimum Series Resistor Value
-  % zS(:5) = all Rows, Column 5 = RsMax = Maximum Series Resistor Value
-  % zS(:6) = all Rows, Column 6 = PMax = Maximum Input Power
-  % zS(:7) = all Rows, Column 7 = PMin = Minimum Input Power
-  % zS(:8) = all Rows, Column 8 = Pout = Output Power to load
-  % zS(:9) = all Rows, Column 9 = PeffMin = Minimum Power Efficiency
-  % zS(:10) = all Rows, Column 10 = PeffMax = Maximum Power Efficiency
+  % zS(:,1) = all Rows, Column 1 = IzMax = Max Zener Current
+  % zS(:,2) = all Rows, Column 2 = V_Rs = Voltage on Series Resistor
+  % zS(:,3) = all Rows, Column 3 = I_Max = Max Total Current
+  % zS(:,4) = all Rows, Column 4 = RsMin = Minimum Series Resistor Value
+  % zS(:,5) = all Rows, Column 5 = RsMax = Maximum Series Resistor Value
+  % zS(:,6) = all Rows, Column 6 = PMax = Maximum Input Power
+  % zS(:,7) = all Rows, Column 7 = PMin = Minimum Input Power
+  % zS(:,8) = all Rows, Column 8 = Pout = Output Power to load
+  % zS(:,9) = all Rows, Column 9 = PeffMin = Minimum Power Efficiency
+  % zS(:,10) = all Rows, Column 10 = PeffMax = Maximum Power Efficiency
   %
   % zS = [IzMax V_Rs I_Max RsMin RsMax Pmax PMin Pout PeffMin PeffMax]
   %
