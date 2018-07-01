@@ -12,9 +12,9 @@ function head = columnLabels(labels, start, colSpace)
 %
 %  Example:
 %  labelNames = {'Col1' 'Column2' 'C3'}
-%  labelStr = columnLabels(labelNames, 5, 9);
+%  labelStr = columnLabels(labelNames, 4, 5);
 %  labelStr 
-%           => '     Col1     Column2  C3       '
+%           => '    Col1 Colu C3'
 %
 
   head = blanks(start);
