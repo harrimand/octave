@@ -12,14 +12,14 @@ function head = columnLabels(labels, start, colSpace)
 %
 %  Example:
 %  labelNames = {'Col1' 'Column2' 'C3'}
-%  labelStr = columnLabels(labelNames, 4, 5);
+%  labelStr = columnLabels(labelNames, 5, 9);
 %  labelStr 
-%           => '    Col1 Colu C3'
+%           => '     Col1     Column2  C3       '
 %
 
   head = blanks(start);
   for c = 1:length(labels)
-    strLen = rindex([labels{c} '_'],'_') - 1
+    strLen = rindex([labels{c} '_'],'_') - 1;
     if (colSpace - strLen > 2);
       head = [head labels{c} blanks(colSpace - strLen)];
     else
@@ -28,3 +28,4 @@ function head = columnLabels(labels, start, colSpace)
   end
   head = deblank(head);  % Remove trailing spaces from string.
 end
+
