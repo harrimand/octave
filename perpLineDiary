@@ -1,0 +1,37 @@
+>> % Author:  Darrell Harriman   harrimand@gmail.com
+>>
+>> % Create and plot a Line object.  Create and plot a new line object from the
+>> %      first line object rotated 90 degrees around it's center point.
+>> % Functions perpLine, xRange, yRange, Dxtick, Dytick are used in this example
+>> 
+>> x1 = 2;
+>> y1 = 3;
+>> x2 = 7;
+>> y2 = 5;
+>> L1 = line([x1, x2], [y1, y2], 'color', 'r', 'LineWidth', 3);
+>>
+>> xRange(1, 0, 10);
+>> yRange(1, 0, 10);
+>> Dxtick(1, 1);
+>> Dytick(1, 1);
+>> grid on;
+>>
+>> [L1pX L1pY] = perpLine(L1);
+>> L1p = line(L1pX, L1pY, 'color', 'b', 'LineWidth', 3);
+>>
+>> format compact  % Supress outputting blank lines
+>>
+>> get(L1, 'xdata')
+ans =
+   2   7
+>> get(L1, 'ydata')
+ans =
+   3   5
+>> get(L2, 'xdata')
+ans =
+   3.5000   8.0000
+>> get(L2, 'ydata')
+ans =
+   4.5000   6.0000
+>>
+>> diary off;
