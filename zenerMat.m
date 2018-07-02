@@ -2,6 +2,7 @@
 function  [zS] = zenerMat(iS)
   % zenerMat(iS) returns a 2D matrix with zener diode circuit analysis results
   %
+  % Author:  Darrell Harriman  harrimand@gmail.com 
   % Usage Example: 
   %      analysis = zenerMat(iS)
   %      where iS is a 2D list of input parameters
@@ -25,7 +26,7 @@ function  [zS] = zenerMat(iS)
   %
   % zS = [IzMax V_Rs I_Max RsMin RsMax Pmax PMin Pout PeffMin PeffMax]
   %
-  % See also: zener, zenerSweep
+  % See also: zener, zenerSweep, zenerDiary
   
   colStart = 5;   % Number of spaces before first column label
   colSpace = 12;  % Column Spacing for column labels.
