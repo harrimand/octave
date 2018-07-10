@@ -17,7 +17,8 @@ function [M] = conwayTest(M)
   disp('Enter x in console to stop Conways Game of Life');
   fflush(stdout);
   [r c] = size(M);  % r = rows  c = columns
-  sum3_3 = conway(M); % Sum of neighbors including wrapped top-bottom side-side
+  [sum3_3 done] = neighbors(M);
+%  sum3_3 = conway(M); % Sum of neighbors including wrapped top-bottom side-side
   M = M & (sum3_3 > 1) & (sum3_3 < 4) | (!M & (sum3_3 == 3));
   
   imagesc((1:r)+0.5, (1:c)+0.5, M); % Plot Matrix
@@ -29,22 +30,25 @@ function [M] = conwayTest(M)
   
   tstart = tic();
   generations = 0;
-  while (1)
+  while (~ done)
     if kbhit(1) == 'x' % Enter 'x' in console to stop
       display(generations);
       display(toc(tstart));
       break
     end
-    sum3_3 = conway(M);
+    [sum3_3 done] = neighbors(M);
+%    sum3_3 = conway(M);
     M = M & (sum3_3 > 1) & (sum3_3 < 4) | (!M & (sum3_3 == 3));
     imagesc((1:r)+0.5, (1:c)+0.5, M);
     generations ++;
     title(['Generations: ' num2str(generations)], 'FontSize', 16);
 
-    while(toc(tstart) < .25)
-    end
-    tstart = tic();
+%    while(toc(tstart) < .25)
+%    end
+%    tstart = tic();
     % pause(.25);  % Seconds to slow simulation
     
-  end    
+  end
+  disp(toc(tstart))
+  disp(num2str(generations))
 end
