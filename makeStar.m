@@ -1,6 +1,12 @@
+% makeStar creates an array of points that will plot a star when filled.
+% Author:  Darrell Harriman  harrimand@gmail.com 
 
 function [star] = makeStar()
-
+  % makeStar returns an array of inner and outer verteces for a star.
+  % parameters: None
+  %
+  % See also: randomStars, randColor, fillComplexLine 
+  
   VertPos = 2;
   HorPos = 2;
   r = .5;

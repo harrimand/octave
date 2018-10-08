@@ -1,5 +1,3 @@
-
-
 function rcolor = randColor()
 % randColor  Return short name for randomly selected color.
 % Parameters:  None
