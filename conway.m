@@ -1,9 +1,10 @@
 % conway
 % Set Matrix dimensions for plot. round(rand(Rows, Columns))==1;
 %   For optimal scale set Columns = int(1.5 * Rows).
-M = round(rand(240, 360))==1;
+% M = round(rand(960, 1440))==1;
+M = tMat;
 useColorPick = false; % Change to true if you want to pick 9 colors
-updateTime = .05;    % Update speed ( Seconds per update )
+updateTime = 1;    % Update speed ( Seconds per update )
 
 %Define Color Maps:
 map2 = [0, 0, 0; 0, 1, 0];
@@ -37,12 +38,14 @@ beginDensity = beginLiveCount / (r * c) * 100;
 
 m = zeros(size(M));
 mSumT = zeros(size(M));
+mSumT2 = zeros(size(M));
+mSum3 = zeros(size(M));
 done = false;
 generations = 1;
 
 tstart = tic();
 tperiod = tstart;
-pause(.1)
+pause(.3)
 set(gcf, 'Position', get(0, 'ScreenSize'))
 drawnow
 
@@ -59,7 +62,7 @@ while(~done)
     % mSum = cast(sum(m, 3), 'uint8');
     
     % Plotting Live cells. Use colormap with 2 colors for this plot.
-    % imagesc(M); 
+    % magesc(M); 
     
     % Plotting cell colors based on number of live neighbors
     imagesc(mSum, [0,8]); 
@@ -70,13 +73,31 @@ while(~done)
             done = true;
         end
         mSumT = mSum;
+    else
+        if(mSumT2 == mSum)
+            done = true;
+        end
+        mSumT2 = mSum;
     end
-    generations = generations + 1;
+    if(mod(generations,3) == 0) % Detect Pulsars with period = 3
+        if(mSum3 == mSum)
+            done = true;
+            fprintf('\nPulsar Detected\n')
+        end
+        mSum3 = mSum;
+    end
 
+    generations = generations + 1;
+    if(generations == 1)
+        M(floor(r/2)-4:floor(r/2)-3, floor(c/2)-1:floor(c/2)) = [1,1;1,1;];
+    end
     while(toc(tperiod) < updateTime)
     end    
     tperiod = tic();
     drawnow('expose')
+    if(generations == 14000)
+        break
+    end
 end
   runtime = toc(tstart);
   LiveCount = sum(sum(M));
@@ -90,4 +111,3 @@ end
     beginLiveCount, beginDensity);
   fprintf('    End Live Cells: %d  End Matrix Density %.2f%%\n\n',...
     LiveCount, Density);
-
