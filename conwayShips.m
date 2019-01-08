@@ -1,6 +1,6 @@
 % conwayShips
 
-pattern = 6;
+pattern = 7;
 
 % Medium Weight Space Ship
 mwssL = [0,0,0,1,0,0;0,1,0,0,0,1;1,0,0,0,0,0;1,0,0,0,0,1;1,1,1,1,1,0];
@@ -21,10 +21,11 @@ lwssU = rot90(lwssL, -1);
 lwssD = rot90(lwssL, 1);
 
 % Glider Space Ship
-gssL = [0,1,0;0,0,1;1,1,1];
-gssR = gssL(:,end:-1:1);
-gssU = rot90(gssL, -1);
-gssD = flipud(gssU); %, 1)
+gssDR = [0,1,0;0,0,1;1,1,1];
+gssUR = [1,1,1;0,0,1;0,1,0];
+% gssUR = gssDR(:,end:-1:1);
+gssDL = rot90(gssDR, -1);
+gssUL = flipud(gssDL); %, 1)
 
 % Pulsar  Sequence has 48, 56 and 72 live cells. size = 17x17
 PS48 =    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
@@ -146,10 +147,10 @@ switch pattern
     case (3)
     % Gliders Randomly Placed ------------------------------------------------
         gl = zeros(3,3,4);
-        gl(:,:,1) = gssL;
-        gl(:,:,2) = gssR;
-        gl(:,:,3) = gssU;
-        gl(:,:,4) = gssD;
+        gl(:,:,1) = gssDR;
+        gl(:,:,2) = gssUR;
+        gl(:,:,3) = gssDL;
+        gl(:,:,4) = gssUL;
 
         % tMat = zeros(240, 360);
         tMat = zeros(480, 720);
@@ -165,9 +166,9 @@ switch pattern
         tMat = zeros(20, 30);
         tMat = toroidMatPaste(tMat, PS48, 2, 6);
 
-    case (5) 
+    case (5)
     %acorn
-        tMat = zeros(100, 150);
+        tMat = zeros(200, 300);
         [tMR, tMC] = size(tMat);
         [aMR, aMC] = size(acorn);
         tMat = toroidMatPaste(tMat, acorn, floor(tMR/2-aMR/2), floor(tMC/2-aMC/2));
@@ -187,4 +188,15 @@ switch pattern
              end
              PSCount = PSCount + 1;
         end
+    case (7)
+    % Glider Collision
+        tMat = zeros(192, 288);
+        % tMat = toroidMatPaste(tMat, gssUL, 92, 141);
+        % tMat = toroidMatPaste(tMat, gssUR, 92, 145);
+        % tMat = toroidMatPaste(tMat, gssDL, 96, 141);
+        % tMat = toroidMatPaste(tMat, gssDR, 96, 145);
+        tMat = toroidMatPaste(tMat, gssDR, 4, 4);
+        tMat = toroidMatPaste(tMat, gssDL, 2, 189);
+        tMat = toroidMatPaste(tMat, gssUR, 189, 2);
+        tMat = toroidMatPaste(tMat, gssUL, 188, 188);
     end
