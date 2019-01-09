@@ -1,6 +1,6 @@
 % conwayShips
 
-pattern = 3;
+% pattern = 3;
 
 % Medium Weight Space Ship
 mwssL = [0,0,0,1,0,0;0,1,0,0,0,1;1,0,0,0,0,0;1,0,0,0,0,1;1,1,1,1,1,0];
@@ -23,6 +23,7 @@ lwssD = rot90(lwssL, 1);
 % Glider Space Ship
 gssDR = [0,1,0;0,0,1;1,1,1];
 gssUR = [1,1,1;0,0,1;0,1,0];
+% gssUR = gssDR(:,end:-1:1);
 gssDL = rot90(gssDR, -1);
 gssUL = flipud(gssDL); %, 1)
 
@@ -93,20 +94,24 @@ switch pattern
     % Random 1s and 0s -------------------------------------------------------
         tMat = round(rand(480, 720))==1;
         % tMat = round(rand(960, 1440))==1;
+        Period = .03;
+        opt = false;
 
     case (2)
     % Gliders Low Resolution -------------------------------------------------
 
         tMat = zeros(48, 72);
-        tMat = toroidMatPaste(tMat, mwssR, 18, 2);
-        tMat = toroidMatPaste(tMat, mwssL, 25, 66);
-        tMat = toroidMatPaste(tMat, mwssU, 22, 39);
-        tMat = toroidMatPaste(tMat, mwssD, 22, 30);
+        tMat = minsert(tMat, mwssR, 18, 2);
+        tMat = minsert(tMat, mwssL, 25, 66);
+        tMat = minsert(tMat, mwssU, 22, 39);
+        tMat = minsert(tMat, mwssD, 22, 30);
 
-        tMat = toroidMatPaste(tMat, mwssL, 2, 67);
-        tMat = toroidMatPaste(tMat, mwssL, 43, 24);
+        tMat = minsert(tMat, mwssL, 2, 67);
+        tMat = minsert(tMat, mwssL, 43, 24);
 
         tMat = circshift(tMat, [0, -36]);
+        Period = .07;
+        opt = false;
 
     case (3)
     % Gliders Randomly Placed ------------------------------------------------
@@ -117,18 +122,22 @@ switch pattern
         gl(:,:,4) = gssUL;
 
         % tMat = zeros(240, 360);
-        tMat = zeros(120, 160);
+        tMat = zeros(480, 720);
         for s = 1:800
             rcMax = size(tMat) - size(gl(:,:,1));
             sx = round(rand(1)*(rcMax(1)-1)) + 1;
             sy = round(rand(1)*(rcMax(2)-1)) + 1;
-            tMat = toroidMatPaste(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
+            tMat = minsert(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
         end
+        Period = .03;
+        opt = false;
 
     case (4)
     % Single Pulsar Low Resolution -------------------------------------------
         tMat = zeros(20, 30);
-        tMat = toroidMatPaste(tMat, PS48, 2, 6);
+        tMat = toroidMatPaste(tMat, PS56, 2, 6);
+        Period = .2;
+        opt = false;
 
     case (5)
     %acorn
@@ -136,6 +145,8 @@ switch pattern
         [tMR, tMC] = size(tMat);
         [aMR, aMC] = size(acorn);
         tMat = toroidMatPaste(tMat, acorn, floor(tMR/2-aMR/2), floor(tMC/2-aMC/2));
+        Period = .03;
+        opt = false;
 
     case (6)
     % Pulsar Grid ------------------------------------------------------------
@@ -152,6 +163,9 @@ switch pattern
              end
              PSCount = PSCount + 1;
         end
+        Period = .1;
+        opt = true;
+        
     case (7)
     % Glider Collision
         tMat = zeros(192, 288);
@@ -163,10 +177,15 @@ switch pattern
         tMat = toroidMatPaste(tMat, gssDL, 2, 189);
         tMat = toroidMatPaste(tMat, gssUR, 189, 2);
         tMat = toroidMatPaste(tMat, gssUL, 188, 188);
-end
+        Period = .03;
+        opt = false;
+    end
+
+close
+conway(tMat, Period, opt);
     
 % Matrix Insert Function -----------------------------------------------------
-function mat = toroidMatPaste(mat, iMat, r, c)
+function mat = minsert(mat, iMat, r, c)
     [matR, matC] = size(mat);
     [imatR, imatC] = size(iMat);
 
@@ -188,9 +207,10 @@ function mat = toroidMatPaste(mat, iMat, r, c)
     mat = circshift(tmat, [ovR, ovC]);
 end
 
-%{
- Matrix Insert Function  (Depricated)
-function [mat] = toroidMatPaste(mat, imat, r, c)
+
+
+%{ Matrix Insert Function  (Depricated)
+function [mat] = minsert(mat, imat, r, c)
     [matR, matC] = size(mat);
     [imatR, imatC] = size(imat);
     if((imatC + c - 1) > matC)
