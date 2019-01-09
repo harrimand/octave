@@ -55,7 +55,7 @@ pause(.3)
 set(hfig, 'Position', get(0, 'ScreenSize'))
 drawnow
 
-while(~ get(mH, 'UserData')(1))
+while(~ get(mH, 'UserData'))
     mSum = circshift(M, [0,-1]);
     for rL = 1:7
         mSum = mSum + circshift(M, rotD(rL,:));
@@ -89,11 +89,11 @@ while(~ get(mH, 'UserData')(1))
         end
         mSumT2 = mSum;
     end
-    if(mod(generations,3) == 0) % Detect Pulsars with period = 3
+    if(mod(generations,6) == 0) % Detect Pulsars with period = 3
         if(mSum3 == mSum)
             set(mH, 'UserData', true)
             % done = true;
-            fprintf('\nPulsar Detected\n')
+            fprintf('\n\n\t\t*** Pulsar Detected ***\n\n')
         end
         mSum3 = mSum;
     end
@@ -122,4 +122,3 @@ end
     beginLiveCount, beginDensity);
   fprintf('    End Live Cells: %d  End Matrix Density %.2f%%\n\n',...
     LiveCount, Density);
-

@@ -1,6 +1,6 @@
 % conwayShips
 
-pattern = 7;
+pattern = 3;
 
 % Medium Weight Space Ship
 mwssL = [0,0,0,1,0,0;0,1,0,0,0,1;1,0,0,0,0,0;1,0,0,0,0,1;1,1,1,1,1,0];
@@ -23,7 +23,6 @@ lwssD = rot90(lwssL, 1);
 % Glider Space Ship
 gssDR = [0,1,0;0,0,1;1,1,1];
 gssUR = [1,1,1;0,0,1;0,1,0];
-% gssUR = gssDR(:,end:-1:1);
 gssDL = rot90(gssDR, -1);
 gssUL = flipud(gssDL); %, 1)
 
@@ -89,41 +88,6 @@ acorn =    [0, 0, 0, 0, 0, 0, 0, 0, 0;...
             0, 1, 1, 0, 0, 1, 1, 1, 0;...
             0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-% Matrix Insert Function -----------------------------------------------------
-function mat = minsert(mat, iMat, r, c)
-    [matR, matC] = size(mat);
-    [imatR, imatC] = size(iMat);
-
-    if((imatR > matR) || (imatC > matC))
-        error('Paste Matrix larger than Matrix')
-    end
-    
-    r = mod(r-1, matR)+1;
-    c = mod(c-1, matC)+1;
-    ovR = max(0, (imatR + r) - matR - 1);
-    ovC = max(0, (imatC + c) - matC - 1);
-    rStart = r - ovR;
-    rEnd = r + imatR - ovR - 1;
-    cStart = c - ovC;
-    cEnd = c + imatC - ovC - 1;
-
-    tmat = circshift(mat, [-ovR, -ovC]);
-    tmat(rStart:rEnd,cStart:cEnd) = iMat;
-    mat = circshift(tmat, [ovR, ovC]);
-end
-
-%{ Matrix Insert Function  (Depricated)
-function [mat] = minsert(mat, imat, r, c)
-    [matR, matC] = size(mat);
-    [imatR, imatC] = size(imat);
-    if((imatC + c - 1) > matC)
-        error('Column Out of Bounds\n')
-    elseif((imatR + r - 1) > matR)
-        error('Row Out of Bounds\n')
-    end
-    mat(r:r+imatR-1,c:c+imatC-1) = imat;
-end
-%}
 switch pattern
     case (1)
     % Random 1s and 0s -------------------------------------------------------
@@ -134,13 +98,13 @@ switch pattern
     % Gliders Low Resolution -------------------------------------------------
 
         tMat = zeros(48, 72);
-        tMat = minsert(tMat, mwssR, 18, 2);
-        tMat = minsert(tMat, mwssL, 25, 66);
-        tMat = minsert(tMat, mwssU, 22, 39);
-        tMat = minsert(tMat, mwssD, 22, 30);
+        tMat = toroidMatPaste(tMat, mwssR, 18, 2);
+        tMat = toroidMatPaste(tMat, mwssL, 25, 66);
+        tMat = toroidMatPaste(tMat, mwssU, 22, 39);
+        tMat = toroidMatPaste(tMat, mwssD, 22, 30);
 
-        tMat = minsert(tMat, mwssL, 2, 67);
-        tMat = minsert(tMat, mwssL, 43, 24);
+        tMat = toroidMatPaste(tMat, mwssL, 2, 67);
+        tMat = toroidMatPaste(tMat, mwssL, 43, 24);
 
         tMat = circshift(tMat, [0, -36]);
 
@@ -153,12 +117,12 @@ switch pattern
         gl(:,:,4) = gssUL;
 
         % tMat = zeros(240, 360);
-        tMat = zeros(480, 720);
+        tMat = zeros(120, 160);
         for s = 1:800
             rcMax = size(tMat) - size(gl(:,:,1));
             sx = round(rand(1)*(rcMax(1)-1)) + 1;
             sy = round(rand(1)*(rcMax(2)-1)) + 1;
-            tMat = minsert(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
+            tMat = toroidMatPaste(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
         end
 
     case (4)
@@ -199,4 +163,41 @@ switch pattern
         tMat = toroidMatPaste(tMat, gssDL, 2, 189);
         tMat = toroidMatPaste(tMat, gssUR, 189, 2);
         tMat = toroidMatPaste(tMat, gssUL, 188, 188);
+end
+    
+% Matrix Insert Function -----------------------------------------------------
+function mat = toroidMatPaste(mat, iMat, r, c)
+    [matR, matC] = size(mat);
+    [imatR, imatC] = size(iMat);
+
+    if((imatR > matR) || (imatC > matC))
+        error('Paste Matrix larger than Matrix')
     end
+    
+    r = mod(r-1, matR)+1;
+    c = mod(c-1, matC)+1;
+    ovR = max(0, (imatR + r) - matR - 1);
+    ovC = max(0, (imatC + c) - matC - 1);
+    rStart = r - ovR;
+    rEnd = r + imatR - ovR - 1;
+    cStart = c - ovC;
+    cEnd = c + imatC - ovC - 1;
+
+    tmat = circshift(mat, [-ovR, -ovC]);
+    tmat(rStart:rEnd,cStart:cEnd) = iMat;
+    mat = circshift(tmat, [ovR, ovC]);
+end
+
+%{
+ Matrix Insert Function  (Depricated)
+function [mat] = toroidMatPaste(mat, imat, r, c)
+    [matR, matC] = size(mat);
+    [imatR, imatC] = size(imat);
+    if((imatC + c - 1) > matC)
+        error('Column Out of Bounds\n')
+    elseif((imatR + r - 1) > matR)
+        error('Row Out of Bounds\n')
+    end
+    mat(r:r+imatR-1,c:c+imatC-1) = imat;
+end
+%}
