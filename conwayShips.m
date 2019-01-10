@@ -99,15 +99,14 @@ switch pattern
 
     case (2)
     % Gliders Low Resolution -------------------------------------------------
-
         tMat = zeros(48, 72);
-        tMat = minsert(tMat, mwssR, 18, 2);
-        tMat = minsert(tMat, mwssL, 25, 66);
-        tMat = minsert(tMat, mwssU, 22, 39);
-        tMat = minsert(tMat, mwssD, 22, 30);
+        tMat = toroidMatPaste(tMat, mwssR, 18, 2);
+        tMat = toroidMatPaste(tMat, mwssL, 25, 66);
+        tMat = toroidMatPaste(tMat, mwssU, 22, 39);
+        tMat = toroidMatPaste(tMat, mwssD, 22, 30);
 
-        tMat = minsert(tMat, mwssL, 2, 67);
-        tMat = minsert(tMat, mwssL, 43, 24);
+        tMat = toroidMatPaste(tMat, mwssL, 2, 67);
+        tMat = toroidMatPaste(tMat, mwssL, 43, 24);
 
         tMat = circshift(tMat, [0, -36]);
         Period = .07;
@@ -127,7 +126,7 @@ switch pattern
             rcMax = size(tMat) - size(gl(:,:,1));
             sx = round(rand(1)*(rcMax(1)-1)) + 1;
             sy = round(rand(1)*(rcMax(2)-1)) + 1;
-            tMat = minsert(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
+            tMat = toroidMatPaste(tMat, gl(:,:,mod(s, 4)+1), sx, sy);
         end
         Period = .03;
         opt = false;
@@ -140,7 +139,7 @@ switch pattern
         opt = false;
 
     case (5)
-    %acorn
+    %acorn --------------------------------------------------------------------
         tMat = zeros(200, 300);
         [tMR, tMC] = size(tMat);
         [aMR, aMC] = size(acorn);
@@ -167,7 +166,7 @@ switch pattern
         opt = true;
         
     case (7)
-    % Glider Collision
+    % Glider Collision --------------------------------------------------------
         tMat = zeros(192, 288);
         % tMat = toroidMatPaste(tMat, gssUL, 92, 141);
         % tMat = toroidMatPaste(tMat, gssUR, 92, 145);
@@ -179,13 +178,72 @@ switch pattern
         tMat = toroidMatPaste(tMat, gssUL, 188, 188);
         Period = .03;
         opt = false;
+
+    case (8)
+    % Glider Column Collision -------------------------------------------------
+        tMat = zeros(320, 480);
+        for sr = 2:12:302
+            tMat = toroidMatPaste(tMat, gssUR, sr, 82);
+            tMat = toroidMatPaste(tMat, gssDL, sr, 398);
+        end
+        Period = .03;
+        opt = false;
+    
+    case (9)
+    % Glider Column Collision (17499 Generations)------------------------------
+        tMat = zeros(320, 480);
+        for sr = 2:12:302
+            tMat = toroidMatPaste(tMat, gssUR, sr, 83);
+            tMat = toroidMatPaste(tMat, gssDL, sr, 238);
+            tMat = toroidMatPaste(tMat, gssDR, sr, 242);
+            tMat = toroidMatPaste(tMat, gssUL, sr, 397);            
+        end
+        Period = .03;
+        opt = false;
+    
+    case (10)
+    % Glider Column Collision (17499 Generations)------------------------------
+        tMat = zeros(320, 480);
+        for sr = 2:12:302
+            tMat = toroidMatPaste(tMat, gssUR, sr, 79);
+            tMat = toroidMatPaste(tMat, gssDL, sr, 236);
+            tMat = toroidMatPaste(tMat, gssDR, sr, 242);
+            tMat = toroidMatPaste(tMat, gssUL, sr, 397);            
+        end
+        Period = .03;
+        opt = false;
+    
+    case (11)
+    % Glider Collision With Block ---------------------------------------------
+    % Clearance to avoid other objects  32 Rows by 47 Columns    
+        tMat = zeros(50, 75);
+        tMat = toroidMatPaste(tMat, gssDR, 14, 27);
+        tMat = toroidMatPaste(tMat, [1,1;1,1] , 28, 37);
+        Period = .1;
+        opt = false;
+
+    case (12)
+    % Glider Collision With Block ---------------------------------------------
+    % Clearance to avoid other objects  32 Rows by 47 Columns    
+        tMat = zeros(132, 252);
+        % tMat = toroidMatPaste(tMat, gssDR, 49, 85);
+        % tMat = toroidMatPaste(tMat, [1,1;1,1] , 63, 95);
+        for c = 2:49:198
+            for r = 12:38:88
+                tMat = toroidMatPaste(tMat, gssDR, r+2, c + 13);
+                tMat = toroidMatPaste(tMat, [1,1;1,1] , r + 16, c + 23);
+            end
+        end
+        Period = .1;
+        opt = false;
+        
     end
 
 close
-conway(tMat, Period, opt);
+M = conway(tMat, Period, opt);
     
 % Matrix Insert Function -----------------------------------------------------
-function mat = minsert(mat, iMat, r, c)
+function mat = toroidMatPaste(mat, iMat, r, c)
     [matR, matC] = size(mat);
     [imatR, imatC] = size(iMat);
 
@@ -210,7 +268,7 @@ end
 
 
 %{ Matrix Insert Function  (Depricated)
-function [mat] = minsert(mat, imat, r, c)
+function [mat] = toroidMatPaste(mat, imat, r, c)
     [matR, matC] = size(mat);
     [imatR, imatC] = size(imat);
     if((imatC + c - 1) > matC)
