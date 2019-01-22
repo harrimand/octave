@@ -1,5 +1,5 @@
 % conway
-function conway(varargin)
+function M = conway(varargin)
     % Set Matrix dimensions for plot. round(rand(Rows, Columns))==1;
     %   For optimal scale set Columns = int(1.5 * Rows).
     switch nargin
@@ -17,6 +17,8 @@ function conway(varargin)
             updateTime = varargin{2};
             option = varargin{3};
     end
+
+%------------------------------------------------------------------------------    
     % M = tMat;
     useColorPick = false; % Change to true if you want to pick 9 colors
     % updateTime = .03;    % Update speed ( Seconds per update )
@@ -32,6 +34,7 @@ function conway(varargin)
     mapZ91 = [0,0,0; 0,0,0; 1,0,0; 1,1,0; 1,0,1; 0,1,1; 0,1,0; 1,1,1; 1,1,1];
     mapZ92 = [0,0,0; 0,0,0; 0,.8,0; 1,1,0; 1,0,0; 0,0,1; 0,1,0; 1,1,1; 1,1,1];
     mapZ93 = [0,0,0; 0,0,0; 0,0,1; 1,1,0; 1,0,0; 1,.11,.81; 0,1,0; 1,1,1; 1,1,1];
+%    mapZ93 = [0,0,0; 0,0,0; 0,0,1; .9,.6,0; 1,0,0; 1,.11,.81; 0,1,0; 1,0,1; 1,1,1];
 
     if useColorPick
         mapCpick = colorPick(9)
@@ -39,6 +42,7 @@ function conway(varargin)
     else
         colormap(mapZ93);  % choose pre-defined colormap
     end
+    
     ax = get(gca);
     set(hfig, 'Position', get(0, 'ScreenSize'))
     set(gca, 'Units', 'normalized')
@@ -48,6 +52,7 @@ function conway(varargin)
     mH = imagesc(tM, [0,8]);
     set(0, 'UserData', false)
     set(mH, 'ButtonDownFcn', {@conwayStop, '1'})
+
 
     % rotD = [-1, -1; -1, 0; -1, 1; 0, -1; 0, 1; 1, -1; 1, 0; 1, 1];
     % rotD2 = [-1, 0; 0, 1; 0, 1; 1, 0; 1, 0; -1, 0; -1, 0];
@@ -63,16 +68,28 @@ function conway(varargin)
     done = false;
     generations = 1;
 
-    tstart = tic();
-    tperiod = tstart;
     pause(.3)
     set(hfig, 'Position', get(0, 'ScreenSize'))
 
     % set(mH, 'cdata', M.*5)
     drawnow
-    pause(5)
+    pause(3)
 
+    tstart = tic();
+    tperiod = tstart;
+    
     while(~ get(0, 'UserData'))
+%{
+        [rM, cM] = size(M);
+        R = zeros(rM+2, cM+2);
+        R = [[M(end,end),M(end,:),M(end,1)];...
+            [M(:,end),M(:,:),M(:,1)];...
+            [M(1,end),M(1,:),M(1,1)]];
+
+        mask = [1, 1, 1; 1, 0, 1; 1, 1, 1];
+        mSum = convn(R, mask, 'same')(2:end-1,2:end-1)
+%}
+
         mSum = circshift(M, [0,-1]);
         for rL = 1:7
             mSum = mSum + circshift(M, rotD(rL,:));
@@ -86,13 +103,15 @@ function conway(varargin)
         % mSum = cast(sum(m, 3), 'uint8');
         
         % Plotting Live cells. Use colormap with 2 colors for this plot.
-        % imagesc(M); 
+        % imagesc(M);
+        % set(mH, 'cdata', M)
         
         % Plotting cell colors based on number of live neighbors
         % imagesc(mSum, [0,8]); 
-        set(mH, 'cdata', mSum)
-        
-        M = M & (mSum > 1) & (mSum < 4) | (~M & (mSum == 3));
+
+ 
+         M = M & (mSum > 1) & (mSum < 4) | (~M & (mSum == 3));
+         set(mH, 'cdata', mSum)      
         if(bitget(generations, 1))
             if(mSumT == mSum)
                 set(0, 'UserData', true)
@@ -117,15 +136,17 @@ function conway(varargin)
 
         generations = generations + 1;
         if(option && (generations == 2))
-            M(floor(r/2)-4:floor(r/2)-3, floor(c/2)-1:floor(c/2)) = [1,1;1,1;];
+            M(floor(r/2)-1:floor(r/2)+1, floor(c/2)-10:floor(c/2)-8) = [1,0,0;0,0,1;1,0,0];
+        % break
         end
+        
         while(toc(tperiod) < updateTime)
         end    
         tperiod = tic();
         drawnow('expose')
-        if(generations == 14000)
-            break
-        end
+        % if(generations == 14000)
+            % break
+        % end
     end
       runtime = toc(tstart);
       LiveCount = sum(sum(M));
