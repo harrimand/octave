@@ -286,27 +286,41 @@ switch pattern
         opt = false;
         
     case (15)
+    % Gliders colliding with 2x2 block at center
         tMat = zeros(24, 36);
         tMat = toroidMatPaste(tMat, [1,1;1,1], 12, 18);
-        tMat = toroidMatPaste(tMat, gssDR2, 4, 15);
+        tMat = toroidMatPaste(tMat, gssDR, 4, 15);
         tMat = toroidMatPaste(tMat, gssDL, 8, 24);
         tMat = toroidMatPaste(tMat, gssUR, 15, 11);
-        tMat = toroidMatPaste(tMat, gssUL2, 19, 20);        
+        tMat = toroidMatPaste(tMat, gssUL, 19, 20);
         
-        Period = .4;
+        Period = .2;
         opt = false;
 
     case (16)
-        tMat = zeros(66, 99);
-        for c = 1:14:85
-            tMat = conwayMatPaste(tMat, glDL(:,:,mod(c-1,4)+1), 30, c);
-            tMat = conwayMatPaste(tMat, glUL(:,:,mod(c-1,4)+1), 30, c+7);
-            tMat = conwayMatPaste(tMat, glDR(:,:,mod(c-1,4)+1), 36, c);
-            tMat = conwayMatPaste(tMat, glUR(:,:,mod(c-1,4)+1), 36, c+7);            
+        tMat = zeros(56, 98);
+        for c = 1:14:92
+            tMat = toroidMatPaste(tMat, gssUL, 1, c + 6);
+            tMat = toroidMatPaste(tMat, gssDR, 1, c);
+            tMat = toroidMatPaste(tMat, gssDL, 15, c);
+            tMat = toroidMatPaste(tMat, gssUR, 15, c + 8);
 
-            Period = .05;
-            opt = false;
+            tMat = toroidMatPaste(tMat, gssUL, 29, c + 6);
+            tMat = toroidMatPaste(tMat, gssDR, 29, c);
+            tMat = toroidMatPaste(tMat, gssDL, 43, c);
+            tMat = toroidMatPaste(tMat, gssUR, 43, c + 8);
         end
+        tMat = horzcat(tMat, tMat);
+        tMat = vertcat(tMat, tMat);
+        tMat = horzcat(tMat, tMat);
+        tMat = vertcat(tMat, tMat);
+        tMat = horzcat(tMat, tMat);
+        tMat = vertcat(tMat, tMat);
+        % tMat = toroidMatPaste(tMat, [1, 1, 1; 1, 1, 1], 223, 390);
+        tMat = toroidMatPaste(tMat, [1, 1, 1, 1; 1, 1, 1, 1;...
+                                     1, 1, 1, 1; 1, 1, 1, 1], 221, 393);
+        Period = .001;
+            opt = false;
 
     case (17)
     % Glider Collision With Block 4x4 -----------------------------------------
