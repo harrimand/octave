@@ -56,7 +56,7 @@ function M = conway(varargin)
 
     % rotD = [-1, -1; -1, 0; -1, 1; 0, -1; 0, 1; 1, -1; 1, 0; 1, 1];
     % rotD2 = [-1, 0; 0, 1; 0, 1; 1, 0; 1, 0; -1, 0; -1, 0];
-    rotD = [-1, -1; -1, 0; -1, 1; 0, 1; 1, -1; 1, 0; 1, 1];
+    % rotD = [-1, -1; -1, 0; -1, 1; 0, 1; 1, -1; 1, 0; 1, 1];
     [r, c] = size(M);
     beginLiveCount = sum(sum(M));
     beginDensity = beginLiveCount / (r * c) * 100;
@@ -69,12 +69,19 @@ function M = conway(varargin)
     generations = 1;
 
     pause(.3)
+    % set(hfig, 'Position', [51, 12, 1871, 1017])
     set(hfig, 'Position', get(0, 'ScreenSize'))
 
     % set(mH, 'cdata', M.*5)
     drawnow
     pause(3)
+%    set(hfig, 'Position', [51, 12, 1871, 1017])
+    
+    % rotD = [-1, -1; -1, 0; -1, 1; 0, -1; 0, 1; 1, -1; 1, 0; 1, 1];
+    % rotCount = 1:8;    
 
+    cs = @(Mat, n) circshift(Mat, [-1,-1;-1,0;-1,1;0,-1;0,1;1,-1;1,0;1,1](n,:));
+        
     tstart = tic();
     tperiod = tstart;
     
@@ -89,11 +96,22 @@ function M = conway(varargin)
         mask = [1, 1, 1; 1, 0, 1; 1, 1, 1];
         mSum = convn(R, mask, 'same')(2:end-1,2:end-1)
 %}
+        % mSum = circshift(M, [0,-1]);
 
-        mSum = circshift(M, [0,-1]);
-        for rL = 1:7
+%        mSum = sum(reshape([cs(M,1),cs(M,2),cs(M,3),cs(M,4),cs(M,5),...
+%                cs(M,6),cs(M,7),cs(M,8)],r,c,8),3);
+
+        mSum = plus(cs(M,1),cs(M,2),cs(M,3),cs(M,4),cs(M,5),...
+                cs(M,6),cs(M,7),cs(M,8));                
+                
+                
+        % mSum = sum(circshift(M, rotD(rotCount,:)),3);
+%{
+        for rL = 1:8
             mSum = mSum + circshift(M, rotD(rL,:));
         end
+%}
+
         % disp(get(mH, 'UserData'))
         %{
         for rL = 1:8
