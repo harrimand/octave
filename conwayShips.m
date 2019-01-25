@@ -317,10 +317,14 @@ switch pattern
         tMat = horzcat(tMat, tMat);
         tMat = vertcat(tMat, tMat);
         % tMat = toroidMatPaste(tMat, [1, 1, 1; 1, 1, 1], 223, 390);
-        tMat = toroidMatPaste(tMat, [1, 1, 1, 1; 1, 1, 1, 1;...
-                                     1, 1, 1, 1; 1, 1, 1, 1], 221, 393);
+%        tMat = toroidMatPaste(tMat, [1, 1, 1, 1; 1, 1, 1, 1;...
+%                                     1, 1, 1, 1; 1, 1, 1, 1], 221, 393);
+        tMat = toroidMatPaste(tMat, [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1;...
+                                     1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1;...
+                                     1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1], 225, 387);
+                             
         Period = .001;
-            opt = false;
+        opt = false;
 
     case (17)
     % Glider Collision With Block 4x4 -----------------------------------------
