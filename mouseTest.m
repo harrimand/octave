@@ -9,23 +9,16 @@ cy = cr * sin(c);
 figure
 
 LR = 1;
-
-% fill(cx + 3.5, cy + 2.5, 'm', 'EdgeColor', 'm', 'Tag', '1')
 hold on
-
-%fill(cx + 6.5, cy + 7.5, 'g', 'EdgeColor', 'g', 'Tag', '2')
-%fill(cx + 7.5, cy + 8.5, 'r', 'EdgeColor', 'r', 'Tag', '3')
-%fill(cx + 8.5, cy + 9.5, 'r', 'EdgeColor', 'r', 'Tag', '3')
-%fill(cx + 2.5, cy + 3.5, 'r', 'EdgeColor', 'r', 'Tag', '3')
 
 color = {'r', 'g', 'b', 'm', 'c', 'y', 'w'};
 
 set(gcf, 'Color', 'k');
 set(gca, 'Color', 'k');
-
 set(gcf, 'Position', [1304, 299, 560, 421])
 
-% set(gcf, 'buttondownfcn', {@mouseTestClick, '1'})
+addproperty('Pause', gcf, 'boolean', 'off') 
+
 set(gca, 'buttondownfcn', {@mouseTestClick, '1'})
 
 Hcirc = zeros(1:numCircs, 3);
@@ -45,13 +38,12 @@ set(gca, 'xtick', [0:1:10]);
 set(gca, 'ylim', [0,10]);
 set(gca, 'ytick', [0:1:10]);
 
-stop = 0;
+stop = false;
 tic()
 loops = 0;
 while(!stop)
     if (toc() > .05)
         tic()
-        stop = true;
         for h = 1:length(Hcirc)
             hmaxX = max(get(Hcirc(h,1), 'Xdata'));
             if hmaxX >= 10
@@ -69,25 +61,25 @@ while(!stop)
             if hminY <= 0
                 Hcirc(h,3) = -1 * Hcirc(h, 3);
             end
-            % if(hmaxX < 10 && hmaxY < 10 && hminX > 0 && hminY > 0)
-                set(Hcirc(h,1), 'Xdata', get(Hcirc(h,1), 'Xdata') + Hcirc(h,2))
-                set(Hcirc(h,1), 'Ydata', get(Hcirc(h,1), 'Ydata') + Hcirc(h,3))
-                stop = false;
-            % end
+            set(Hcirc(h,1), 'Xdata', get(Hcirc(h,1), 'Xdata') + Hcirc(h,2))
+            set(Hcirc(h,1), 'Ydata', get(Hcirc(h,1), 'Ydata') + Hcirc(h,3))
         end
         loops = loops + 1;
         drawnow
+        if (str2num(get(gcf, 'Tag')) == 1)
+            fprintf(':::::: Left Button Clicked ::::::\n')
+            set(gcf, 'Tag', '0')
+            stop = true;
+        elseif(strcmp(get(gcf, 'Pause'), 'on'))
+            fprintf(':::::: Right Button Clicked ::::::\n')
+            fprintf('*** PAUSED ***\n')
+            while(strcmp(get(gcf, 'Pause'), 'on'))
+                pause(.1)
+            end
+            fprintf('*** RUN ***\n')
+        end
     end
-    if (loops > 30000)
+    if (loops > 3000)
         stop = true;
     end
 end
-
-
-
-% grid on
-
-
-
-% lastLine = findobj(gca, 'Type', 'line');
-% delete(lastLine(1));
