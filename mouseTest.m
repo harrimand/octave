@@ -21,6 +21,11 @@ addproperty('Pause', gcf, 'boolean', 'off')
 
 set(gca, 'buttondownfcn', {@mouseTestClick, '1'})
 
+set(gca, 'xlim', [0,10]);
+set(gca, 'xtick', [0:1:10]);
+set(gca, 'ylim', [0,10]);
+set(gca, 'ytick', [0:1:10]);
+
 Hcirc = zeros(1:numCircs, 3);
 for p = 1:numCircs
     xp = rand(1) * 9 + .5;
@@ -33,17 +38,35 @@ for p = 1:numCircs
     Hcirc(p, 3) = rand(1) * .2 -.1;
 end
 
-set(gca, 'xlim', [0,10]);
-set(gca, 'xtick', [0:1:10]);
-set(gca, 'ylim', [0,10]);
-set(gca, 'ytick', [0:1:10]);
-
 stop = false;
 tic()
 loops = 0;
 while(!stop)
     if (toc() > .05)
         tic()
+        
+        X0 = cell2mat(get(Hcirc(1:20,1), 'Xdata'))(1:31:620);
+        Xsn = (((X0 >= 10) | (X0 <= 1)) .* 2 - 1) .* -1;
+        Y0 = cell2mat(get(Hcirc(1:20,1), 'Ydata'))(1:31:620);
+        Ysn = (((Y0 >= 9.5) | (Y0 <= .5)) .* 2 - 1) .* -1;
+        
+        if ~all(Xsn+1)
+            Hcirc(:,2) = Hcirc(:,2) .* Xsn;
+        end
+        if ~all(Ysn+1)
+            Hcirc(:,3) = Hcirc(:,3) .* Ysn;
+        end
+
+%         set(Hcirc(:,1), 'Xdata', get(Hcirc(:,1), 'Xdata'){1} + Hcirc(:,2))
+%         set(Hcirc(:,1), 'Ydata', get(Hcirc(:,1), 'Ydata'){1} + Hcirc(:,3))
+
+        for h = 1:length(Hcirc)
+            set(Hcirc(h,1), 'Xdata', get(Hcirc(h,1), 'Xdata') + Hcirc(h,2))
+            set(Hcirc(h,1), 'Ydata', get(Hcirc(h,1), 'Ydata') + Hcirc(h,3))
+        end
+        
+        
+%{        
         for h = 1:length(Hcirc)
             hmaxX = max(get(Hcirc(h,1), 'Xdata'));
             if hmaxX >= 10
@@ -61,9 +84,12 @@ while(!stop)
             if hminY <= 0
                 Hcirc(h,3) = -1 * Hcirc(h, 3);
             end
+
             set(Hcirc(h,1), 'Xdata', get(Hcirc(h,1), 'Xdata') + Hcirc(h,2))
             set(Hcirc(h,1), 'Ydata', get(Hcirc(h,1), 'Ydata') + Hcirc(h,3))
         end
+%}
+        
         loops = loops + 1;
         drawnow
         if (str2num(get(gcf, 'Tag')) == 1)
@@ -83,3 +109,10 @@ while(!stop)
         stop = true;
     end
 end
+
+%{
+maxX = reshape(cell2mat(get(Hcirc(:,1), 'Xdata')), 31, 20)(1,:);
+minX = reshape(cell2mat(get(Hcirc(:,1), 'Xdata')), 31, 20)(16,:);
+maxY = reshape(cell2mat(get(Hcirc(:,1), 'Ydata')), 31, 20)(8,:);
+minY = reshape(cell2mat(get(Hcirc(:,1), 'Ydata')), 31, 20)(23,:);
+%}
