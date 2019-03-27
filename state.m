@@ -101,25 +101,93 @@ end
 
 fprintf('\n\n')
 
-% Place 0, 1, X on Karnaugh Map
-dec2gray = @(n) bitxor(n, bitshift(n, -1));
-seqLen = 12;
-rp = randperm(2^ceil(log2(seqLen))-1)(1:seqLen);
 
-rpCh = char(rp + 65); % Test Characters in place of JtK and KtK.
+% ----------------------------------------------------------------------------
+% Place 0, 1, X on Karnaugh Map
+% dec2gray = @(n) bitxor(n, bitshift(n, -1));
+% seqLen = 12;
+% rp = randperm(2^ceil(log2(seqLen))-1)(1:seqLen);
+
+% rpCh = char(rp + 65); % Test Characters in place of JtK and KtK.
 
 gS = ([dec2gray(0:3); dec2gray(7:-1:4); dec2gray(8:11); dec2gray(15:-1:12)]);
 gS = reshape(gS', 1, 16);
 
-Km = char(ones(1, 16) .* 88);
+% Km = char(ones(1, 16) .* 88);
+%{
+Km(1,:) = char(ones(1, 16) .* 88);
+Km(2,:) = char(ones(1, 16) .* 88);
 
 rpLen = length(rp);
+
 for i = 1:rpLen
-    Km(find(gS == rp(i))) = rpCh(i);
+    % Km(find(gS == rp(i))) = rpCh(i);
+    Km(1, find(gS == rp(i))) = JtK{}(i,1);
+    Km(2, find(gS == rp(i))) = JtK{}(i,2);    
 end
 
-Kmap = reshape(Km, 4, 4)';
+% Kmap = reshape(Km, 4, 4)';
+Kmap(:,:,1) = reshape(Km(1,:), 4, 4)';
+Kmap(:,:,2) = reshape(Km(2,:), 4, 4)';
 
+rp
+JtK{}(:,1)'
+Kmap(:,:,1)
+JtK{}(:,2)'
+Kmap(:,:,2)
+%}
+
+rpLen = length(rp);
+
+for q = 1:nQ
+    Jm = char(ones(1, 16) .* 88);
+    Km = char(ones(1, 16) .* 88);
+    for i = 1:rpLen
+        Jm(find(gS == rp(i))) = JtK{}(i,q);
+        Km(find(gS == rp(i))) = KtK{}(i,q);
+    end
+    Jmap(:,:,q) = reshape(Jm, 4, 4)';
+    Kmap(:,:,q) = reshape(Km, 4, 4)';
+end
+
+rp
+% JtK{}(:,1)'
+% Jmap(:,:,1)
+
+% KtK{}(:,1)'
+% Kmap(:,:,1)
+
+fid = fopen('stateKmaps.txt', 'w');
+fprintf(fid, 'Sequence:\n\t')
+fdisp(fid, rp)
+fprintf(fid, '\n\n')
+
+for q = 1:nQ
+    fprintf('Q%d\t\tJ%d\t\t\tK%d\n', q, q, q)
+    fprintf(fid, 'Q%d\t\tJ%d\t\t\tK%d\n', q, q, q)
+    for jq = 1:nQ
+        fprintf('\t\t')
+        fprintf(fid, '\t\t')
+        for jx = 1:nQ
+            fprintf('% 3s', Jmap(jq, jx, q))
+            fprintf(fid, '% 3s', Jmap(jq, jx, q))
+        end
+        fprintf('\t\t')
+        fprintf(fid, '\t\t')
+        for jx = 1:nQ
+            fprintf('% 3s', Kmap(jq, jx, q))
+            fprintf(fid, '% 3s', Kmap(jq, jx, q))
+        end
+        fprintf('\n\n')
+        fprintf(fid, '\n\n')
+    end
+    fprintf('\n\n')
+    fprintf(fid, '\n\n\n\n')
+end
+% fprintf(fid, '--END FILE--\n')
+fclose(fid)
+
+% ----------------------------------------------------------------------------
 
 
 
