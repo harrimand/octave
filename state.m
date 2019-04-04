@@ -1,7 +1,7 @@
 %state
 % State Machine J-K Flip Flop Calculations
 
-seqLen = 12;
+% seqLen = 12;
 
 Jt = ['0', '1', 'X', 'X'];
 Kt = ['X', 'X', '1', '0'];
@@ -9,7 +9,10 @@ Kt = ['X', 'X', '1', '0'];
 dec2gray = @(n) bitxor(n, bitshift(n, -1));
 
 % rp = randperm(seqLen)-1;
-rp = randperm(2^ceil(log2(seqLen))-1)(1:seqLen);
+% rp = [randperm(2^ceil(log2(seqLen)))-1](1:seqLen);
+
+seqLen=16;
+rp = [dec2gray(0:15)];
 
 rpB = dec2bin(rp);
 nQ = length(dec2bin(max(rp)));  % Number of Flip Flops
@@ -137,6 +140,8 @@ JtK{}(:,2)'
 Kmap(:,:,2)
 %}
 
+% ----------------------------------------------------------------------------
+% Place JtK and KtK values in 4x4 Karnaugh Maps
 rpLen = length(rp);
 
 for q = 1:nQ
@@ -151,17 +156,13 @@ for q = 1:nQ
 end
 
 rp
-% JtK{}(:,1)'
-% Jmap(:,:,1)
-
-% KtK{}(:,1)'
-% Kmap(:,:,1)
 
 fid = fopen('stateKmaps.txt', 'w');
-fprintf(fid, 'Sequence:\n\t')
+fprintf(fid, 'Sequence:\n')
 fdisp(fid, rp)
 fprintf(fid, '\n\n')
 
+%{
 for q = 1:nQ
     fprintf('Q%d\t\tJ%d\t\t\tK%d\n', q, q, q)
     fprintf(fid, 'Q%d\t\tJ%d\t\t\tK%d\n', q, q, q)
@@ -184,13 +185,52 @@ for q = 1:nQ
     fprintf('\n\n')
     fprintf(fid, '\n\n\n\n')
 end
-% fprintf(fid, '--END FILE--\n')
+
 fclose(fid)
-
 % ----------------------------------------------------------------------------
+%}
+Qfmt = {sprintf('%16s', ' '), sprintf('%16s', ' '), ' \n\n';...
+        
+        sprintf('%16s', ' '), sprintf('  |%13s', ' '),...
+            sprintf('  |\n%29s | Q2%23s |  Q2\n', ' ', ' ');...
+        
+        sprintf('%16s', '|'), sprintf('  |%12s|', ' '),...
+            sprintf('  |\n%16s%28s\n', 'Q1 |', 'Q1 |');...
+        
+        sprintf('%16s', '|'), sprintf('%16s', '|'),...
+            sprintf('\n%25s%28s\n%24s%28s', '----', '----', 'Q4', 'Q4')};
 
+for q = 1:nQ
+    fprintf('Q%-13dJ%-10dQ3                K%-9dQ3\n', q, q, q)
+    fprintf(fid, 'Q%-13dJ%-10dQ3                K%-9dQ3\n', q, q, q)
+    fprintf('%28s%28s\n','----', '----')
+    fprintf(fid, '%28s%28s\n','----', '----')
 
+    for jq = 1:nQ
+        fprintf(Qfmt{jq,1})
+        fprintf(fid, Qfmt{jq,1})
 
+        for jx = 1:nQ
+            fprintf('% 3s', Jmap(jq, jx, q))
+            fprintf(fid, '% 3s', Jmap(jq, jx, q))
+        end
+
+        fprintf(Qfmt{jq,2})
+        fprintf(fid, Qfmt{jq,2})
+        
+        for jx = 1:nQ
+            fprintf('% 3s', Kmap(jq, jx, q))
+            fprintf(fid, '% 3s', Kmap(jq, jx, q))
+        end
+
+        fprintf(Qfmt{jq,3})
+        fprintf(fid, Qfmt{jq,3})
+    end
+    fprintf('\n\n\n\n')
+    fprintf(fid, '\n\n\n\n\n\n')
+end
+fclose(fid);
+% ----------------------------------------------------------------------------
 
 %{
 % for qj = 1:seqLen
