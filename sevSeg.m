@@ -1,10 +1,11 @@
-classdef sevSeg
+classdef sevSeg < handle
     properties (SetAccess = public, GetAccess = public)
         dig
         Val
         segSize
         posX
         posY
+        segColor
     end
     methods
         function obj = sevSeg(X, Y, Sz)
@@ -13,6 +14,7 @@ classdef sevSeg
                 obj.posX = X;
                 obj.posY = Y;
                 obj.segSize = Sz;
+                obj.segColor = [0, 1, 0];
                 obj = obj.newSeg();
                 obj = obj.setSize(Sz);
                 obj = obj.setPos(X, Y);
@@ -33,12 +35,11 @@ classdef sevSeg
             seg(6) = fill([-.2, -.2, -.3, -.3, -.2], [.35, .05, 0, .45, .35], 'g', 'tag', 'f', 'parent', obj.dig);
             seg(7) = fill([-.3, -.2, .2, .3, .2, -.2, -.3], [0, -.05, -.05, 0, .05, .05, 0],...
                   'g', 'tag', 'g', 'parent', obj.dig);
-            seg(8) = rectangle('Position', [.305, -.495, .04, .04], 'Curvature', [1, 1],...
-                'Edgecolor', 'none', 'Facecolor', 'r', 'tag', 'p', 'parent', obj.dig);
+            seg(8) = rectangle('Position', [.305, -.490, .04, .04], 'Curvature', [1, 1],...
+                'Edgecolor', 'none', 'Facecolor', [.6, .6, .6], 'tag', 'p', 'parent', obj.dig);
          end
  
         function obj = setSize(obj, segSize)
-            % dig = obj.dig;
             CH = get(obj.dig, 'Children');
             set(CH(1), 'Position', get(CH(1), 'Position') .* segSize)
             set(CH(9), 'Position', get(CH(9), 'Position') .* segSize)
@@ -64,47 +65,49 @@ classdef sevSeg
             set(CH(1), 'position', get(CH(1), 'position') + [movX, movY, 0, 0])
             set(CH(9), 'position', get(CH(9), 'position') + [movX, movY, 0, 0])
         end
-        
+
         function obj = digWr(obj, num)
-            % dig = obj.dig;
-            obj.Val = num;
-            set(obj.dig, 'userdata', num)
+            if (num < 0 | num > 15)
+                error("Invalid Input... 0 <= input <= 15")
+            end
+            obj.Val = int8(num);
+            set(obj.dig, 'userdata', obj.Val)
             CH = get(obj.dig, 'Children');
-            ss = [0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0xFD, 0x07,...
-                0x7F, 0x67, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71];
+
+            SS = ['3F'; '06'; '5B'; '4F'; '66'; '6D'; 'FD'; '07';...
+                '7F'; '67'; '77'; '7C'; '39'; '5E'; '79'; '71'];
+
+            ss = hex2dec(SS);
+
+            % ss = [0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0xFD, 0x07,...
+            %     0x7F, 0x67, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71];
             for b = 2:8
-                if(bitget(ss(num+1), 9-b))
-                    set(CH(b), 'facecolor', [0, 1, 0])
+                if(bitget(ss(obj.Val+1), 9-b))
+                    set(CH(b), 'facecolor', obj.segColor)
                 else
                     set(CH(b), 'facecolor', [.6, .6, .6])
                 end
             end
         end
-        
+
         function obj = digClr(obj)
-            % dig = obj.dig;
             CH = get(obj.dig, 'Children');
             for b = 2:8
                 set(CH(b), 'facecolor', [.6, .6, .6])
             end
         end
+
+        function obj = setColor(obj, Color)
+            obj.segColor = Color;
+        end
         
         function V = getVal(obj)
             V = obj.Val;
-            disp(V)
         end
-%{
-        function obj = set.Val(obj, num)
-            obj.Val = num;
-        end
-%}
+        
         function obj = set.Val(obj, num)
             obj.Val = num;
         end
         
-        function V = get.Val(obj)
-            V = obj.Val;
-            % disp(V)
-        end            
     end
 end
