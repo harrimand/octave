@@ -69,17 +69,44 @@ set(seg(8), 'position', get(seg(8), 'position') + [movX, movY, 0, 0])
 %}
 
 if(1)
-% Example 2 digit Hex Counter
+    mcolors = true;
+    Col = [0.00000, 1.00000, 0.00000;
+           0.00000, 0.66667, 0.00000;
+           1.00000, 1.00000, 0.50000;
+           1.00000, 1.00000, 0.00000;
+           1.00000, 0.66667, 0.00000;
+           1.00000, 0.33333, 0.00000;
+           0.66667, 0.33333, 1.00000;
+           0.66667, 0.66667, 1.00000;
+           1.00000, 0.33333, 0.50000;
+           1.00000, 0.00000, 0.50000;
+           1.00000, 0.00000, 0.00000;
+           0.66667, 0.33333, 1.00000;
+           1.00000, 0.66667, 1.00000;
+           1.00000, 1.00000, 1.00000;
+           0.85714, 0.85714, 0.85714;
+           0.33333, 1.00000, 1.00000];
+
+% Example 2 digit Counter
+    base = 16;
     sd = sevSeg(-8*5/7, -4, 8);
     sd2 = sevSeg(0, -4, 8);
-    for n = 0:35
-        sd2.digWr(mod(n, 16));
-        if(n < 16)
+    sd.setColor([1, 0, .5]);
+    sd2.setColor([1, 0, .5]);
+    mc = 1;
+    for n = 0:(base^2 - 1)
+        sd2.digWr(mod(n, base));
+        if(n < base)
             sd.digClr();
         else
-            sd.digWr(floor(n/16));
+            sd.digWr(floor(n/base));
         end
         % disp(sd2.getVal)
+        if(mcolors)
+            sd.setColor(Col(mc,:));
+            sd2.setColor(Col(mc,:));
+            mc = mod(mc + 1, 15)+1;
+        end
         pause(.5)
     end
 end
