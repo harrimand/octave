@@ -3,7 +3,10 @@ classdef base %  < handle
         N
         Base
         len
+        mult
+        placeVals
         sym
+        Nstr
         weights
         Symbols
     end
@@ -23,12 +26,19 @@ classdef base %  < handle
         
         function obj = symVec(obj)
             for d = 1:obj.len
-                obj.sym(obj.len + 1 - d) = mod(floor(obj.N / obj.Base^(d-1)), obj.Base);
+                % obj.mult(obj.len + 1 - d) = mod(floor(obj.N / obj.Base^(d-1)), obj.Base);
+                symInd = mod(floor(obj.N / obj.Base^(d-1)), obj.Base);
+                disp(symInd)
+                disp(obj.Symbols(symInd + 1));
+                % obj.mult(obj.len + 1 - d) = obj.Symbols(symInd + 1);
+                obj.mult(obj.len + 1 - d) = symInd;
+                obj.sym{obj.len + 1 - d} = obj.Symbols(symInd + 1);
             end
+            obj.Nstr = [obj.sym{}];
         end
         
         function obj = wghts(obj)
-            obj.weights = obj.sym .* obj.Base.^(obj.len-1:-1:0);        
+            obj.weights = obj.mult .* obj.Base.^(obj.len-1:-1:0);        
         end
         
         function lg = logb(obj, n, b)
@@ -42,8 +52,10 @@ classdef base %  < handle
             disp(obj.Base)
             disp('obj.len: ')
             disp(obj.len)
-            disp('obj.sym')
-            disp(obj.sym)
+            disp('obj.mult')
+            disp(obj.mult)
+            disp('obj.Nstr')
+            disp(obj.Nstr)
             disp('obj.weights')
             disp(obj.weights)
         end            
