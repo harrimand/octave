@@ -76,11 +76,21 @@ avrTable('avrText', dC)
 avrSinTable = [floor(min(128 + sin(0:2 * pi / 256: 2 * pi) .* 128, 255))](1:end-1)
 avrTable('avrSinTable', avrSinTable)
 
+# Table to drive a servo motor in sinusoidal motion.
+servoMin = 600;
+servoMax = 2200;
+map = @(In, minIn, maxIn, minOut, maxOut) In * (maxOut - minOut) / (maxIn - minIn) + minOut;
+avrSinTable = floor(min(128 + sin(0:2 * pi / 256: 2 * pi) .* 128, 255))(1:end-1);
+avrServoTable = round(arrayfun(map, avrSinTable, min(avrSinTable), max(avrSinTable), servoMin, servoMax));
+avrTable('avrServoTable', avrServoTable);
+
+
 Open files in your favorite text editor.
 avr8bit.txt
 avr16bit.txt
 avrText.txt
 avrSinTable.txt
+avrServoTable.txt
 
 # To view a plot of the avrSinTable:
 plot(1:length(avrSinTable), avrSinTable, 'color', 'r', 'linewidth', 2)
