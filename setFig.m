@@ -44,4 +44,5 @@ printf("set(gca, 'XTick', %.2f: %.2f: %.2f);\n",...
     str2double(cfg{3}), str2double(cfg{7}),str2double(cfg{4}))
 printf("set(gca, 'YTick', %.2f: %.2f: %.2f);\n",...
     str2double(cfg{5}), str2double(cfg{8}),str2double(cfg{6}))
-printf("grid %s;\n\n", cfg{9})
+printf("grid %s;\n", cfg{9})
+printf("hold on;\n\n")
