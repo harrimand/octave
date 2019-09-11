@@ -35,7 +35,7 @@ grid(cfg{9});
 % Printing Output Script
 printf("\nfigure();\n")
 printf("axis();\n")
-printf("set(gcf, 'Position', [%d, %d, %d, %d])\n", fp(1), fp(2), fp(3), fp(4))
+printf("set(gcf, 'Position', [%d, %d, %d, %d]);\n", fp(1), fp(2), fp(3), fp(4))
 printf("title('%s', 'fontsize', %d, 'fontweight', 'bold');\n",...
     cfg{1}, str2num(cfg{2}))
 printf("set(gca, 'XLim', [%d, %d], 'YLim', [%d, %d]);\n",...
