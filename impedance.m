@@ -77,11 +77,11 @@ function drawPlot(data)
     cla;
     set(gca, 'XLim', [-10, XMax], 'YLim', [-XMax, XMax])
     set(gca, 'fontsize', 20, 'fontweight', 'bold')
-    set(gcf, 'Position', [180, 150, 800, 1200])
+    set(gcf, 'Position', [180, 150, 600, 800])
     hold on
     grid on
-    line([0, 0], [-XMax, XMax], 'linewidth', 2)
-    line([-10, XMax], [0, 0], 'linewidth', 2)
+    line([0, 0], [-XMax, XMax], 'color', 'k', 'linewidth', 2)
+    line([-10, XMax], [0, 0], 'color', 'k', 'linewidth', 2)
     line([0, R], [0, X], 'color', 'b', 'linewidth', 2);
-    stem(R, X, 'r-.', 'linewidth', 3);
+    stem(R, X, 'r-.', 'linewidth', 2);
 end
