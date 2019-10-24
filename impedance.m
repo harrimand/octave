@@ -1,59 +1,18 @@
-
+% R-L-C Impedance Calculator and Plotter
 close
-
-
-% data = getData();
-% disp(data)
-
-% printf('\n\n');
-%{
-F = str2num(data{1}());
-R = str2num(data{2}());
-L = str2num(data{3}());
-C = str2num(data{4}());
-
-% printf('\n\n');
-
-XL = 2 * pi * F * L;
-XC = -1 / (2 * pi * F * C);
-X = XL + XC;
-Th = atan(X / R) * 180 / pi;
-Z = sqrt(X^2 + R^2);
-XMax = ceil(Z / 10) * 12;
-%}
-
-%{
-[R, X, Th, Z, XMax] = calcs(data);
-figure()
-set(gca, 'XLim', [-10, XMax], 'YLim', [-XMax, XMax])
-set(gca, 'fontsize', 20, 'fontweight', 'bold')
-set(gcf, 'Position', [180, 150, 800, 1200])
-hold on
-grid on
-line([0, 0], [-XMax, XMax], 'linewidth', 2)
-line([-10, XMax], [0, 0], 'linewidth', 2)
-line([0, R], [0, X], 'color', 'b', 'linewidth', 2);
-St = stem(R, X, 'r-.', 'linewidth', 3);
-%}
-
 data = getData();
-
 [R, X, Th, Z, XMax] = calcs(data);
-
 drawPlot(data)
-
 plotText(data, XMax)
 
-
-while(isempty(data))
+while(not(isempty(data)))
     data = getData(data);
-    if(isempty(data))
+    if(not(isempty(data)))
         [R, X, Th, Z, XMax] = calcs(data);
-        drawPlot(data, XMax)
+        drawPlot(data)
         plotText(data, XMax)
     end
 end
-
 
 function data = getData(Defaults)
     Title = 'Circuit Data';
@@ -122,28 +81,7 @@ function drawPlot(data)
     hold on
     grid on
     line([0, 0], [-XMax, XMax], 'linewidth', 2)
-%    hold on
     line([-10, XMax], [0, 0], 'linewidth', 2)
     line([0, R], [0, X], 'color', 'b', 'linewidth', 2);
     stem(R, X, 'r-.', 'linewidth', 3);
 end
-
-
-% disp(data)
-% printf("Data Length: %d", length(data))
-
-%{
-if(X > 0)
-    tqy = -.4 * XMax;
-else
-    tqy = .6 * XMax;
-end
-tqx = .2 * XMax;
-txtF = sprintf("F: %d Hz", F);
-txtR = [sprintf("R: %d", R), ' \Omega'];
-txtX = [sprintf("X: %d", X), ' \Omega'];
-txtTh = ['Th ', '\theta', sprintf(": %d", Th), '\bf{^\circ}'];
-txtZ = [sprintf('Z: %.2f',Z), ' \angle', sprintf(' %.2f',Th)];
-text(tqx, tqy, {txtF, txtR, txtX, txtTh, txtZ},...
-    'fontsize', 20, 'fontweight', 'bold')
-%}
