@@ -33,10 +33,11 @@ function [zind] = zeroCross(M, pn)
     end
 end
 %------------------------------------------------------------------------------
-f = sqrt(1/(L*C)-R^2/(4 * L^2))
+w = sqrt(1/(L*C)-R^2/(4 * L^2))
+f = w / (2 * pi)
 y = R / (2 * L)
 T = 1 / f
-t = 0:T / 20:100*T;
+t = 0:T / 20:20*T;
 qc = @(t, V0, R, L, C, y) V0 .* exp(-y.*t) .* cos(sqrt(1/(L*C)-R^2/(4*L^2)).*t);
 qs = @(t, V0, R, L, C, y) V0 .* exp(-y.*t) .* sin(sqrt(1/(L*C)-R^2/(4*L^2)).*t);
 q_env = @(t, V0, y) V0 .* exp(-y.*t);
@@ -60,18 +61,17 @@ Zs = zeroCross(vs, -1) % Find indexes where sin plot crosses zero.
 %------------------------------------------------------------------------------
 % set(gcf, 'Position', [145, 522, 1698, 954]);
 pause(.5)
-set(gcf, 'Position', [145, 520, 1700, 960]); % set figure size
+set(gcf, 'Position', [32, 250, 1700, 960]); % set figure size
 
 titleStr = sprintf("RLC Dampening,   F = %d", f)
 
 title(titleStr, 'fontsize', 30, 'fontweight', 'bold', 'color', 'y');
 set(gca, 'fontsize', 20);
-set(gca, 'XLim', [0, 100*T], 'YLim', [-V0, V0]);
-set(gca, 'XTick', 0.00:15 * T:150*T);
+set(gca, 'XLim', [0, 20*T], 'YLim', [-V0, V0]);
+set(gca, 'XTick', 0.00:2 * T:20*T);
 set(gca, 'YTick', -V0:V0/10:V0);
 set(gca, 'color', 'k');
 set(gcf, 'color', 'k');
-set(gca, 'XColor', [.7, .7, .7])
-set(gca, 'YColor', [.7, .7, .7])
+set(gca, 'XColor', [.9, .9, .9])
+set(gca, 'YColor', [.9, .9, .9])
 grid on;
-
