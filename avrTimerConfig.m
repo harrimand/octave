@@ -38,7 +38,7 @@ if(T_period <= T1_maxTime)
     CT1f = sprintf("Configured T1 Frequency: %d Hz\n", 1/(OCR1A * T1_ckSel * 1E-6));
     printf(CT1p)
     printf(CT1f)
-    else
+else
     error("Frequency too low for Timer 1")
 end
 printf("\n\n")
