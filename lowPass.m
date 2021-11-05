@@ -14,11 +14,11 @@ Vout = KVL(V, Rp(R, Xc(F, C)), Xl(F, L) + Rp(R, Xc(F, C)));  # Voltage outputs
 VoMag = abs(Vout);                          # Magnitude of complex numbers
 VoTh = rad2deg(arg(Vout));                  # Degree angle of complex numbers
 Adb = 20 .* log10(VoMag);                   # Gain in deciBells
-semilogx(F, Adb, 'linewidth', 3, 'color', 'r');  # Plot with logarithmic X axis
+# semilogx(F, Adb, 'linewidth', 3, 'color', 'r');  # Plot with logarithmic X axis
+
+ax = plotyy (F,Adb, F,VoTh, @semilogx, @semilogx);
+
 set(gca, 'fontsize', 20, 'fontweight', 'bold');
 grid on;
 set(gca, 'gridalpha', .8);
 hold on;
-
-plotyy(F, VoTh, 'linewidth', 3, 'color', 'b');
-
